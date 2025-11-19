@@ -220,16 +220,6 @@ function searchBooks(){
 
 
 
-function addBook(){
-    let t=prompt("Title:"); if(!t)return;
-    let a=prompt("Author:"); 
-    let c=prompt("Category:");
-    let img=prompt("Image path:");
-    let books=JSON.parse(localStorage.getItem("books"));
-    books.push({title:t,author:a,category:c,image:img,desc:""});
-    localStorage.setItem("books",JSON.stringify(books));
-    loadBooks();
-}
 
 loadBooks();
 </script>
@@ -343,16 +333,7 @@ function searchBooks(){
 
 
 
-function addBook(){
-    let t=prompt("Title:"); if(!t)return;
-    let a=prompt("Author:"); 
-    let c=prompt("Category:");
-    let img=prompt("Image path:");
-    let books=JSON.parse(localStorage.getItem("books"));
-    books.push({title:t,author:a,category:c,image:img,desc:""});
-    localStorage.setItem("books",JSON.stringify(books));
-    loadBooks();
-}
+
 
 loadBooks();
 </script>
@@ -366,3 +347,4 @@ loadBooks();
             localStorage.setItem("books",JSON.stringify(books));
             loadBooks();
         }
+
