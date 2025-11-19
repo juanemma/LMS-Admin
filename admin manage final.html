@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Books</title>
+
+<style>
+            .nav1 {
+            background-color: rgb(0, 104, 0);
+            display: flex;
+            align-items: center;
+        }
+        .left{
+            display: flex;
+            gap: 20px;
+        }
+        .left a{
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: bold;
+            gap: 30px;
+        }
+nav {
+    background-color: rgb(0, 104, 0);
+    position: relative;
+    z-index: 1;
+}
+
+/* Hamburger icon */
+.nav1 {
+    font-size: 28px;
+    cursor: pointer;
+    padding: 15px;
+    color: white;
+    display: block;
+}
+
+/* Nav links container */
+.nav2 {
+    display: none;
+    flex-direction: column;
+}
+
+/* Links */
+.nav2 a, .dropbtn {
+    color: white;
+    padding: 12px 20px;
+    text-decoration: none;
+    display: block;
+    font-weight: bold;
+}
+
+/* Dropdown container */
+.dropdown {
+    position: relative;
+}
+
+/* Dropdown content */
+.dropdown-content {
+    display: none;
+    flex-direction: column;
+    background-color: darkgreen;
+    border: 2px solid rgb(0, 74, 5);
+    border-radius: 5px;
+
+}
+
+.dropdown-content a {
+    padding: 10px 20px;
+}
+.dropdown-content a:hover {
+    background-color: white;
+    color: darkgreen;
+}
+
+
+/* Show dropdown on hover (desktop) */
+.dropdown:hover .dropdown-content {
+    display: flex;
+}
+
+/* Show nav when active (mobile) */
+.nav2.active {
+    display: flex;
+}
+
+/* Mobile-friendly dropdown toggle */
+.dropdown.active .dropdown-content {
+    display: flex;
+}
+
+/* Desktop: hide hamburger, show links horizontally */
+@media (min-width: 600px) {
+    .nav1 { display: none; }
+    .nav2 { display: flex; flex-direction: row; }
+    .nav2 a, .dropbtn { padding: 15px; }
+    .dropdown-content { position: absolute; top: 100%; left: 0; }
+}
+.dropbtn{
+    padding: 10px ;
+    background-color: rgb(0, 26, 0);
+    border-radius: 5px;
+
+}
+    body{margin:0;font-family:Arial;background:#f1f1f1;}
+    .words{background:#002a01;color:white;padding:15px;display:flex;align-items:center;}
+    .words img{width:90px;height:90px;margin-right:10px;}
+
+    .search-container{margin:20px;display:flex;justify-content:center;}
+    .search-container input{width:80%;padding:12px;font-size:16px;border:1px solid gray;border-radius:6px;}
+
+    #addBookBtn{margin:15px auto;display:block;padding:10px 20px;background:green;color:white;border:none;border-radius:5px;cursor:pointer;}
+
+    .book-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;padding:20px;}
+    .book{background:white;padding:15px;border-radius:10px;text-align:center;box-shadow:0 0 5px rgba(0,0,0,0.2);}
+    .book img{width:150px;height:200px;object-fit:cover;border-radius:8px;}
+
+    .delete-btn{margin-top:10px;padding:8px 15px;background:red;color:white;border:none;border-radius:5px;cursor:pointer;}
+    .delete-btn:hover{background:darkred;}
+
+    .not-found{text-align:center;font-size:20px;color:red;display:none;}
+</style>
+</head>
+<body>
+
+<div class="words">
+    <img src="LMS IMG/logo.jpg">
+    <div>
+        <h2 style="margin:0;">Mountain Province State University</h2>
+        <p>Bontoc Campus</p>
+        <p>Poblacion,Bontoc,Mountain Province</p>
+        <p style="margin:0;">Library</p>
+    </div>
+</div>
+<nav>
+    <div class="nav1" id="nav1">&#9776;</div> <!-- Hamburger icon -->
+    <div class="nav2" id="nav2">
+        <a href="admin home.html">HOME</a>
+        <a href="admin bookpage.html">BOOK</a>
+
+
+        <div class="dropdown" id="adminDropdown">
+            <a href="#" class="dropbtn">ADMIN</a>
+            <div class="dropdown-content">
+                <div><a href="add book.html">ADD BOOK</a></div>
+                <div><a href="admin manage final.html">MANAGE BOOKS</a></div>
+                <div><a href="admin borrowed books.html">BOOKS BORROWED</a></div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="search-container">
+    <input id="searchBar" placeholder="Search..." onkeyup="searchBooks()">
+</div>
+
+<button id="addBookBtn" onclick="addBook()">+ Add Book</button>
+
+<div class="book-grid" id="bookGrid"></div>
+
+<p class="not-found" id="notFound">No books found</p>
+
+<script>
+let defaultBooks = [
+    {title:"Criminal Investigation", author:"Charles R. Swanson", category:"Criminology", image:"bookpage/crim inves.jpg", desc:"A detailed guide on crime detection and investigative procedures."},
+    {title:"Forensic Science Essentials", author:"Richard Saferstein", category:"Criminology", image:"bookpage/for sci.jpg", desc:"Covers modern forensic science techniques used in solving crimes."},
+
+    {title:"Fundamentals of Nursing", author:"Patricia A. Potter", category:"Nursing", image:"bookpage/fon.jpg", desc:"Core concepts, clinical skills, and nursing responsibilities."},
+    {title:"Medical-Surgical Nursing", author:"Ignatavicius & Workman", category:"Nursing", image:"bookpage/msn.jpg", desc:"Complete MS nursing concepts, patient care, and procedures."},
+
+    {title:"Programming Fundamentals", author:"Joyce Farrell", category:"Information Technology", image:"bookpage/pf.png", desc:"Introduction to coding logic, variables, loops, and algorithms."},
+    {title:"Computer Networking", author:"James F. Kurose", category:"Information Technology", image:"bookpage/cn.jpg", desc:"Explains network models, protocols, and internet architecture."},
+
+    {title:"Office Management Principles", author:"Ricky Griffin", category:"BSOA", image:"bookpage/omp.jpg", desc:"Essential office administration concepts and management skills."},
+
+    {title:"Foundations of Education", author:"Ornstein & Levine", category:"Teacher Education", image:"bookpage/fe.jpg", desc:"Covers teaching history, philosophy, and classroom foundations."},
+
+    {title:"Introduction to Psychology", author:"David G. Myers", category:"Liberal Arts", image:"bookpage/ip.jpg", desc:"Explores human behavior, cognition, emotions, and mental processes."},
+
+    {title:"Accounting Principles", author:"Jerry Weygandt", category:"Accountancy", image:"bookpage/ap.jpg", desc:"Covers accounting basics, financial reporting, and analysis."},
+
+    {title:"Principles of Marketing", author:"Philip Kotler", category:"Business Administration", image:"bookpage/pm.jpg", desc:"Core marketing concepts, strategies, and real-world applications."}
+];
+
+
+function loadBooks(){
+    let books=JSON.parse(localStorage.getItem("books"));
+    if(!books){localStorage.setItem("books",JSON.stringify(defaultBooks));books=defaultBooks;}
+    displayBooks(books);
+}
+
+function displayBooks(list){
+    let grid=document.getElementById("bookGrid");
+    grid.innerHTML="";
+    list.forEach((b,i)=>{
+        grid.innerHTML+=`
+            <div class="book">
+                <img src="${b.image}">
+                <h3>${b.title}</h3>
+                <p><b>${b.author}</b></p>
+                <p>${b.category}</p>
+                <button class="delete-btn" onclick="deleteBook(${i})">Delete</button>
+            </div>`;
+    });
+}
+
+function searchBooks(){
+    let s=document.getElementById("searchBar").value.toLowerCase();
+    let books=JSON.parse(localStorage.getItem("books"));
+    let filtered=books.filter(b=>
+        b.title.toLowerCase().includes(s)||
+        b.author.toLowerCase().includes(s)||
+        b.category.toLowerCase().includes(s)
+    );
+    displayBooks(filtered);
+    document.getElementById("notFound").style.display=filtered.length?"none":"block";
+}
+
+
+
+function addBook(){
+    let t=prompt("Title:"); if(!t)return;
+    let a=prompt("Author:"); 
+    let c=prompt("Category:");
+    let img=prompt("Image path:");
+    let books=JSON.parse(localStorage.getItem("books"));
+    books.push({title:t,author:a,category:c,image:img,desc:""});
+    localStorage.setItem("books",JSON.stringify(books));
+    loadBooks();
+}
+
+loadBooks();
+</script>
+
+</body>
+</html>
+//<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Books</title>
+
+<style>
+    body{margin:0;font-family:Arial;background:#f1f1f1;}
+    .words{background:#002a01;color:white;padding:15px;display:flex;align-items:center;}
+    .words img{width:90px;height:90px;margin-right:10px;}
+
+    .search-container{margin:20px;display:flex;justify-content:center;}
+    .search-container input{width:80%;padding:12px;font-size:16px;border:1px solid gray;border-radius:6px;}
+
+    #addBookBtn{margin:15px auto;display:block;padding:10px 20px;background:green;color:white;border:none;border-radius:5px;cursor:pointer;}
+
+    .book-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;padding:20px;}
+    .book{background:white;padding:15px;border-radius:10px;text-align:center;box-shadow:0 0 5px rgba(0,0,0,0.2);}
+    .book img{width:150px;height:200px;object-fit:cover;border-radius:8px;}
+
+    .delete-btn{margin-top:10px;padding:8px 15px;background:red;color:white;border:none;border-radius:5px;cursor:pointer;}
+    .delete-btn:hover{background:darkred;}
+
+    .not-found{text-align:center;font-size:20px;color:red;display:none;}
+</style>
+</head>
+<body>
+
+<div class="words">
+    <img src="LMS IMG/logo.jpg">
+    <div>
+        <h2 style="margin:0;">Mountain Province State University</h2>
+        <p>Bontoc Campus</p>
+        <p>Poblacion,Bontoc,Mountain Province</p>
+        <p style="margin:0;">Library</p>
+    </div>
+</div>
+
+<div class="search-container">
+    <input id="searchBar" placeholder="Search..." onkeyup="searchBooks()">
+</div>
+
+<button id="addBookBtn" onclick="addBook()">+ Add Book</button>
+
+<div class="book-grid" id="bookGrid"></div>
+
+<p class="not-found" id="notFound">No books found</p>
+
+<script>
+let defaultBooks = [
+    {title:"Criminal Investigation", author:"Charles R. Swanson", category:"Criminology", image:"bookpage/crim inves.jpg", desc:"A detailed guide on crime detection and investigative procedures."},
+    {title:"Forensic Science Essentials", author:"Richard Saferstein", category:"Criminology", image:"bookpage/for sci.jpg", desc:"Covers modern forensic science techniques used in solving crimes."},
+
+    {title:"Fundamentals of Nursing", author:"Patricia A. Potter", category:"Nursing", image:"bookpage/fon.jpg", desc:"Core concepts, clinical skills, and nursing responsibilities."},
+    {title:"Medical-Surgical Nursing", author:"Ignatavicius & Workman", category:"Nursing", image:"bookpage/msn.jpg", desc:"Complete MS nursing concepts, patient care, and procedures."},
+
+    {title:"Programming Fundamentals", author:"Joyce Farrell", category:"Information Technology", image:"bookpage/pf.png", desc:"Introduction to coding logic, variables, loops, and algorithms."},
+    {title:"Computer Networking", author:"James F. Kurose", category:"Information Technology", image:"bookpage/cn.jpg", desc:"Explains network models, protocols, and internet architecture."},
+
+    {title:"Office Management Principles", author:"Ricky Griffin", category:"BSOA", image:"bookpage/omp.jpg", desc:"Essential office administration concepts and management skills."},
+
+    {title:"Foundations of Education", author:"Ornstein & Levine", category:"Teacher Education", image:"bookpage/fe.jpg", desc:"Covers teaching history, philosophy, and classroom foundations."},
+
+    {title:"Introduction to Psychology", author:"David G. Myers", category:"Liberal Arts", image:"bookpage/ip.jpg", desc:"Explores human behavior, cognition, emotions, and mental processes."},
+
+    {title:"Accounting Principles", author:"Jerry Weygandt", category:"Accountancy", image:"bookpage/ap.jpg", desc:"Covers accounting basics, financial reporting, and analysis."},
+
+    {title:"Principles of Marketing", author:"Philip Kotler", category:"Business Administration", image:"bookpage/pm.jpg", desc:"Core marketing concepts, strategies, and real-world applications."}
+];
+
+
+function loadBooks(){
+    let books=JSON.parse(localStorage.getItem("books"));
+    if(!books){localStorage.setItem("books",JSON.stringify(defaultBooks));books=defaultBooks;}
+    displayBooks(books);
+}
+
+function displayBooks(list){
+    let grid=document.getElementById("bookGrid");
+    grid.innerHTML="";
+    list.forEach((b,i)=>{
+        grid.innerHTML+=`
+            <div class="book">
+                <img src="${b.image}">
+                <h3>${b.title}</h3>
+                <p><b>${b.author}</b></p>
+                <p>${b.category}</p>
+                <button class="delete-btn" onclick="deleteBook(${i})">Delete</button>
+            </div>`;
+    });
+}
+
+function searchBooks(){
+    let s=document.getElementById("searchBar").value.toLowerCase();
+    let books=JSON.parse(localStorage.getItem("books"));
+    let filtered=books.filter(b=>
+        b.title.toLowerCase().includes(s)||
+        b.author.toLowerCase().includes(s)||
+        b.category.toLowerCase().includes(s)
+    );
+    displayBooks(filtered);
+    document.getElementById("notFound").style.display=filtered.length?"none":"block";
+}
+
+
+
+function addBook(){
+    let t=prompt("Title:"); if(!t)return;
+    let a=prompt("Author:"); 
+    let c=prompt("Category:");
+    let img=prompt("Image path:");
+    let books=JSON.parse(localStorage.getItem("books"));
+    books.push({title:t,author:a,category:c,image:img,desc:""});
+    localStorage.setItem("books",JSON.stringify(books));
+    loadBooks();
+}
+
+loadBooks();
+</script>
+
+</body>
+</html>
+//          function deleteBook(i){
+            let books=JSON.parse(localStorage.getItem("books"));
+            if(!confirm("Delete this book?"))return;
+            books.splice(i,1);
+            localStorage.setItem("books",JSON.stringify(books));
+            loadBooks();
+        }

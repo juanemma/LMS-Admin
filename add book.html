@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Book - Admin</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    margin: 15px 0 5px;
+    font-weight: bold;
+}
+
+form input[type="text"],
+form textarea,
+form input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+form textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+form button {
+    background-color: rgb(0, 104, 0);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    margin-top: 10px;
+}
+
+form button:hover {
+    background-color: darkgreen;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Add a New Book</h2>
+    <form id="addBookForm" enctype="multipart/form-data">
+        <label for="title">Book Title:</label>
+        <input type="text" id="title" name="title" placeholder="Enter book title" required>
+
+        <label for="author">Author:</label>
+        <input type="text" id="author" name="author" placeholder="Enter author name" required>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" placeholder="Enter book description" required></textarea>
+
+        <label for="cover">Cover Image:</label>
+        <input type="file" id="cover" name="cover" accept="image/*" required>
+
+        <label for="category">Category/Genre:</label>
+        <input type="text" id="category" name="category" placeholder="e.g. IT, Fiction">
+
+        <button type="submit">Add Book</button>
+    </form>
+</div>
+
+<script>
+// Example: Capture form data (for now just logging to console)
+const form = document.getElementById('addBookForm');
+form.addEventListener('submit', (e) => {
+    e.preventDefault(); // prevent actual submission
+
+    const formData = new FormData(form);
+
+    console.log("Title:", formData.get('title'));
+    console.log("Author:", formData.get('author'));
+    console.log("Description:", formData.get('description'));
+    console.log("Category:", formData.get('category'));
+    console.log("Cover File:", formData.get('cover').name);
+
+    alert("Book information successful!");
+});
+</script>
+
+</body>
+</html>
